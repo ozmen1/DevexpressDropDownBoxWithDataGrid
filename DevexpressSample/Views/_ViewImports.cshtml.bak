@@ -1,0 +1,3 @@
+﻿@using DevexpressSample
+@using DevexpressSample.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

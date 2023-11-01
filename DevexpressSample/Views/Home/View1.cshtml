@@ -1,0 +1,128 @@
+﻿@using DevExtreme.AspNet.Mvc;
+@{
+    ViewData["Title"] = "View1";
+}
+
+<h2>View1</h2>
+
+@(Html.DevExtreme().DataGrid<DevexpressSample.Customer>()
+    .ID("devgrid1")
+    .DataSource(ds => ds.Mvc()
+        .Controller("Customers")
+        .LoadAction("Get")
+        .InsertAction("Post")
+        .UpdateAction("Put")
+        .DeleteAction("Delete")
+        .Key("CustomerId")
+    )
+    .RemoteOperations(true)
+    .OnRowUpdating("onRowUpdating")
+    .Columns(columns =>
+    {
+
+        columns.AddFor(m => m.CustomerId);
+
+        columns.AddFor(m => m.FirstName)
+        .FormItem(e => e
+        .Editor(i => i
+        .DropDownBox()
+        .DataSource(ds => ds.Mvc()
+        .Controller("Customers")
+        .LoadAction("Get2")
+        .Key("CustomerId")
+        )
+        .DisplayExpr(new JS("gridBox_displayExpr"))
+        .ValueExpr("FirstName")
+        .OnValueChanged("valueChanged")
+        .ShowClearButton(true)
+        .Placeholder("Select a value...")
+        .ContentTemplate(new TemplateName("EmbeddedDataGrid"))
+        ));
+
+        columns.AddFor(m => m.LastName);
+
+        columns.AddFor(m => m.Company);
+
+        columns.AddFor(m => m.Address);
+
+        columns.AddFor(m => m.City);
+
+        columns.AddFor(m => m.State);
+
+        columns.AddFor(m => m.Country);
+
+        columns.AddFor(m => m.PostalCode);
+
+        columns.AddFor(m => m.Phone);
+
+        columns.AddFor(m => m.Fax);
+
+        columns.AddFor(m => m.Email);
+
+        columns.AddFor(m => m.SupportRepId)
+        .Lookup(lookup => lookup
+        .DataSource(ds => ds.WebApi().Controller("Customers").LoadAction("EmployeesLookup").Key("Value"))
+        .ValueExpr("Value")
+        .DisplayExpr("Text")
+        );
+    })
+    .Editing(e => e
+        .AllowAdding(true)
+        .AllowUpdating(true).Mode(GridEditMode.Form)
+        .AllowDeleting(true)
+    )
+)
+
+@using (Html.DevExtreme().NamedTemplate("EmbeddedDataGrid"))
+{
+    @(Html.DevExtreme().DataGrid<DevexpressSample.Customer>()
+                    .ID("embedded-datagrid")
+                    .DataSource(ds => ds.Mvc()
+                    .Controller("Customers")
+                    .LoadAction("Get2")
+                    .Key("FirstName")
+                    )
+                    .Height(250)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .OnSelectionChanged(@<text>
+                        function(selectedItems) {
+                        var keys = selectedItems.selectedRowKeys;
+                        component.option("value", keys);
+                        console.log("test onselectionchanged " + keys)
+                        component.close();
+                        }
+                    </text>)
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.CustomerId);
+                        columns.AddFor(m => m.FirstName);
+                        columns.AddFor(m => m.Company);
+                        columns.AddFor(m => m.LastName);
+                        columns.AddFor(m => m.State);
+                    }
+                    )
+                    .FilterRow(f => f.Visible(true))
+                )
+}
+
+<script>
+    function gridBox_displayExpr(item) {
+        return item && item.FirstName + " <" + item.LastName + ">";
+    }
+
+    function valueChanged(e) {
+        var $dataGrid = $("#embedded-datagrid");
+
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+            console.log("test onvaluechanged " + e.value);
+        }
+    }
+
+    function onRowUpdating() {
+        console.log("OnRowUpdating Triggered!");
+    }
+</script>

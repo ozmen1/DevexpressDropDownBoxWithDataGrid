@@ -1,0 +1,41 @@
+﻿<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Bilgilerinizi Girin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="adInput" class="form-label">Adınız</label>
+                    <input type="text" class="form-control" id="adInput" placeholder="Adınızı girin">
+                </div>
+                <div class="mb-3">
+                    <label for="yasInput" class="form-label">Yaşınız</label>
+                    <input type="text" class="form-control" id="yasInput" placeholder="Yaşınızı girin">
+                </div>
+                <div class="mb-3">
+                    <label for="dogumYeriInput" class="form-label">Doğum Yeriniz</label>
+                    <input type="text" class="form-control" id="dogumYeriInput" placeholder="Doğum yerinizi girin">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                <button type="button" class="btn btn-primary" id="modalSaveButton">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modal = new bootstrap.Modal(document.getElementById('myModal'));
+
+    document.getElementById('modalSaveButton').addEventListener('click', function () {
+        var ad = document.getElementById('adInput').value;
+        var yas = document.getElementById('yasInput').value;
+        var dogumYeri = document.getElementById('dogumYeriInput').value;
+        
+        modal.hide();
+        transferDataToMainScreen(ad, yas, dogumYeri);
+    });
+</script>
